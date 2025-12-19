@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Christian Ezeani",
+    "cars": [{"id": 1}, {"id": 4}, {"id": 6}],
+    "houses": [{"id": 1}, {"id": 4}, {"id": 6}]
+  },
+  {
+    "id": 2,
+    "name": "John Doe",
+    "cars": [{"id": 1}, {"id": 4}, {"id": 6}],
+    "houses": [{"id": 1}, {"id": 4}, {"id": 6}]
+  }
+]

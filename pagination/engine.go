@@ -9,7 +9,13 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type Engine[T Setter[D], D any] struct{}
+type Engine[T Setter[D], D any] struct {
+	clauseList []clause.Expression
+}
+
+func (x *Engine[T, D]) SetClauses(clauseList ...clause.Expression) {
+	x.clauseList = clauseList
+}
 
 func (x *Engine[T, D]) Paginate(db *gorm.DB, options ...Options) (value T, err error) {
 	opts := x.options(options...)
@@ -20,13 +26,15 @@ func (x *Engine[T, D]) Paginate(db *gorm.DB, options ...Options) (value T, err e
 		return
 	}
 
-	db = db.Offset(-1).Limit(-1).Session(&gorm.Session{})
+	db = db.Offset(-1).Limit(-1)
 
-	data, total := []D{}, uint64(0)
+	data, total := []D{}, int64(0)
 	page, offset, from, limit := opts.parse()
 
-	vtype := reflect.TypeOf(value)
-	value = reflect.New(vtype).Interface().(T)
+	if vt := reflect.TypeOf(value); vt.Kind() == reflect.Pointer {
+		value = reflect.New(vt.Elem()).Interface().(T)
+	}
+
 	value.SetCurrentPage(uint64(page))
 	value.SetPerPage(limit)
 	value.SetFrom(uint64(from))
@@ -40,29 +48,26 @@ func (x *Engine[T, D]) Paginate(db *gorm.DB, options ...Options) (value T, err e
 	value.SetData(data)
 	value.SetTo(uint64(offset + len(data)))
 
-	tx := db.Offset(-1).Limit(-1).Clauses(clause.Select{
-		Expression: clause.Expr{
-			SQL:                "COUNT(?)",
-			WithoutParentheses: true,
-			Vars: []any{clause.Column{
-				Table: clause.CurrentTable,
-				Name:  clause.PrimaryKey,
-			}},
-		},
-	})
-
-	err = tx.Scan(&total).Error
+	err = db.Offset(-1).Limit(-1).Count(&total).Error
 
 	if err != nil {
 		return
 	}
 
-	value.SetTotal(total)
+	value.SetTotal(uint64(total))
 
 	lastPage := math.Ceil(float64(total) / float64(limit))
 	value.SetLastPage(uint64(lastPage))
 
 	return
+}
+
+func (x *Engine[T, D]) applyClauses(db *gorm.DB) *gorm.DB {
+	if len(x.clauseList) > 0 {
+		db = db.Clauses(x.clauseList...)
+	}
+
+	return db
 }
 
 func (x *Engine[T, D]) options(options ...Options) Options {

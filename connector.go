@@ -84,8 +84,6 @@ func (x *xConnector) call(db *gorm.DB, callbacks ...ConnectionCallback) *gorm.DB
 
 // ===============================
 
-var Connection xConnector
-
 func NewConnector(opts Options) Connector {
 	return &xConnector{opts: opts}
 }

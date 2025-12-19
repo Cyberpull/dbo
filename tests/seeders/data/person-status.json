@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "personId": 1,
+    "name": "PENDING",
+    "text": "Account Pending"
+  },
+  {
+    "id": 2,
+    "personId": 1,
+    "name": "APPROVED",
+    "text": "Account Approved"
+  },
+  {
+    "id": 3,
+    "personId": 1,
+    "name": "SUSPENDED",
+    "text": "Account Suspended"
+  },
+  {
+    "id": 4,
+    "personId": 2,
+    "name": "PENDING",
+    "text": "Account Pending"
+  },
+  {
+    "id": 5,
+    "personId": 2,
+    "name": "APPROVED",
+    "text": "Account Approved"
+  }
+]

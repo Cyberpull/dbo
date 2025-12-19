@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "personId": 1,
+    "address": "5 Okunade Street",
+    "city": "Mushin",
+    "state": "Lagos",
+    "country": "Nigeria"
+  },
+  {
+    "id": 2,
+    "personId": 1,
+    "address": "1 Alfa-Nda Street",
+    "city": "Mushin",
+    "state": "Lagos",
+    "country": "Nigeria"
+  },
+  {
+    "id": 3,
+    "personId": 2,
+    "address": "51 Akanro Street",
+    "city": "Mushin",
+    "state": "Lagos",
+    "country": "Nigeria"
+  },
+  {
+    "id": 4,
+    "personId": 2,
+    "address": "12 Da-Silva Avenue, Ilasamaja",
+    "city": "Mushin",
+    "state": "Lagos",
+    "country": "Nigeria"
+  },
+  {
+    "id": 5,
+    "personId": 2,
+    "address": "5 Olafimihan Street",
+    "city": "Mushin",
+    "state": "Lagos",
+    "country": "Nigeria"
+  }
+]

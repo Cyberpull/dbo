@@ -73,6 +73,8 @@ func (x *xInstance) WithCancel(options ...DB) (db *gorm.DB, cancel context.Cance
 }
 
 func (x *xInstance) Migrate(models ...any) (err error) {
+	fmt.Print("Running Database Migration... ")
+
 	db, err := x.Get()
 
 	if err != nil {
@@ -91,18 +93,19 @@ func (x *xInstance) Migrate(models ...any) (err error) {
 
 	err = db.AutoMigrate(models...)
 
-	// for _, model := range models {
-	// 	err = db.AutoMigrate(model)
+	if err != nil {
+		return
+	}
 
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// }
+	fmt.Println("Completed!")
+	fmt.Println()
 
 	return
 }
 
 func (x *xInstance) Seed(entries ...SeederEntry) (err error) {
+	fmt.Println("Running Database Seeders...")
+
 	db, err := x.Get()
 
 	if err != nil {
@@ -113,9 +116,12 @@ func (x *xInstance) Seed(entries ...SeederEntry) (err error) {
 		err = x.seed(NewSession(db), entry)
 
 		if err != nil {
-			break
+			return
 		}
 	}
+
+	fmt.Println("Database Seeders Completed!")
+	fmt.Println()
 
 	return
 }
@@ -123,7 +129,7 @@ func (x *xInstance) Seed(entries ...SeederEntry) (err error) {
 func (x *xInstance) seed(db *gorm.DB, entry SeederEntry) (err error) {
 	name := strings.TrimSpace(entry.Name())
 
-	fmt.Printf("Seeding '%v'... ", name)
+	fmt.Printf("Seeding %v... ", name)
 
 	err = entry.Handler(db)
 
