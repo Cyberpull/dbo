@@ -1,0 +1,41 @@
+name: Test DBO
+
+on:
+  push:
+    branches: [ master, develop ]
+
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # environment: testing
+
+    env:
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_DATABASE: dbo_test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Start MySQL
+      run: sudo service mysql start
+
+    - name: Create MySQL Database
+      run: mysql -u $DB_USERNAME -p$DB_PASSWORD -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;"
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25'
+
+    - name: Clean test cache
+      run: go clean -testcache
+
+    - name: Install modules
+      run: go mod download
+
+    - name: Run DBO Tests
+      run: go test ./tests -v

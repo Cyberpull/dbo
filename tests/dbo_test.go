@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"os"
 	"testing"
 
 	"github.com/Cyberpull/dbo"
@@ -28,15 +29,12 @@ func (x *DBOTestSuite) SetupSuite() {
 	var err error
 
 	connector := dbo.NewConnector(dbo.Options{
-		Driver: "mysql",
-		Host:   "localhost",
-		Port:   "3306",
-		// DBName:   os.Getenv("DB_DATABASE"),
-		// Username: os.Getenv("DB_USERNAME"),
-		// Password: os.Getenv("DB_PASSWORD"),
-		DBName:   "dbo_test",
-		Username: "dbo_test",
-		Password: "nonstop",
+		Driver:   "mysql",
+		Host:     "localhost",
+		Port:     "3306",
+		DBName:   env("DB_DATABASE", "dbo_test"),
+		Username: env("DB_USERNAME", "dbo_test"),
+		Password: env("DB_PASSWORD", "nonstop"),
 		Config: &gorm.Config{
 			CreateBatchSize: 3000,
 			Logger:          logger.Default.LogMode(logger.Silent),
@@ -205,6 +203,18 @@ func (x *DBOTestSuite) TestSuspendedPersons() {
 
 	count := len(persons)
 	require.Equal(x.T(), 1, count)
+}
+
+// ===============================
+
+func env(key string, defaultValue ...string) (value string) {
+	value = os.Getenv(key)
+
+	if value == "" && len(defaultValue) > 0 {
+		value = defaultValue[0]
+	}
+
+	return
 }
 
 // ===============================
